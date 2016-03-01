@@ -29,8 +29,7 @@ define ->
     return
 
   (->
-
-    @nextLine = ->
+    @nextLine = () ->
       @row++
       if @row >= @lines.length
         false
@@ -41,7 +40,7 @@ define ->
       @row--
       return
 
-    @linesUpToNextWhitespaceLine = ->
+    @linesUpToNextWhitespaceLine = () ->
       @linesUpToNextMatchingLine /^ *$/
 
     @linesUpToNextMatchingLine = (match) ->
@@ -56,7 +55,8 @@ define ->
       lines
 
     return
-  ).call LogText.prototype
+  ).call(LogText.prototype)
+
   state =
     NORMAL: 0
     ERROR: 1
@@ -64,8 +64,8 @@ define ->
   LatexParser = (text, options) ->
     @log = new LogText(text)
     @state = state.NORMAL
-    options = options or {}
-    @fileBaseNames = options.fileBaseNames or [
+    options = options || {}
+    @fileBaseNames = options.fileBaseNames || [
       /compiles/
       /\/usr\/local/
     ]
@@ -77,8 +77,7 @@ define ->
     return
 
   (->
-
-    @parse = ->
+    @parse = () ->
       while (@currentLine = @log.nextLine()) != false
         if @state == state.NORMAL
           if @currentLineIsError()
@@ -116,13 +115,13 @@ define ->
       @currentLine[0] == '!'
 
     @currentLineIsWarning = ->
-      ! !@currentLine.match(LATEX_WARNING_REGEX)
+      !!@currentLine.match(LATEX_WARNING_REGEX)
 
     @currentLineIsPackageWarning = ->
-      ! !@currentLine.match(PACKAGE_WARNING_REGEX)
+      !!@currentLine.match(PACKAGE_WARNING_REGEX)
 
     @currentLineIsHboxWarning = ->
-      ! !@currentLine.match(HBOX_WARNING_REGEX)
+      !!@currentLine.match(HBOX_WARNING_REGEX)
 
     @parseSingleWarningLine = (prefix_regex) ->
       warningMatch = @currentLine.match(prefix_regex)
@@ -153,7 +152,7 @@ define ->
       # Regex to get rid of the unnecesary (packagename) prefix in most multi-line warnings
       prefixRegex = new RegExp('(?:\\(' + packageName + '\\))*[\\s]*(.*)', 'i')
       # After every warning message there's a blank line, let's use it
-      while ! !(@currentLine = @log.nextLine())
+      while !!(@currentLine = @log.nextLine())
         lineMatch = @currentLine.match(LINES_REGEX)
         line = if lineMatch then parseInt(lineMatch[1], 10) else line
         warningMatch = @currentLine.match(prefixRegex)
@@ -262,7 +261,7 @@ define ->
       }
 
     return
-  ).call LatexParser.prototype
+  ).call(LatexParser.prototype)
 
   LatexParser.parse = (text, options) ->
     new LatexParser(text, options).parse()
