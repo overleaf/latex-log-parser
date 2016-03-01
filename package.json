@@ -1,0 +1,14 @@
+{
+	"name": "latex-log-parser-sharelatex",
+	"version": "1.0.0",
+	"description": "",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"compile": "./node_modules/.bin/coffee -o dist/ src/coffee/latex-log-parser.coffee"
+	},
+	"author": "",
+	"license": "MIT",
+	"dependencies": {
+		"coffee-script": "^1.10.0"
+	}
+}
