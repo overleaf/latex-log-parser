@@ -1,206 +1,203 @@
 define([
-  "../dist/latex-log-parser",
-  "text!logs/errors.log",
-  "text!logs/warnings.log",
-  "text!logs/bad-boxes.log",
-  "text!logs/biber-warnings.log",
-  "text!logs/natbib-warnings.log",
-  "text!logs/geometry-warnings.log",
-  "text!logs/caption-warnings.log"
+	"../dist/latex-log-parser",
+	"text!logs/errors.log",
+	"text!logs/warnings.log",
+	"text!logs/bad-boxes.log",
+	"text!logs/biber-warnings.log",
+	"text!logs/natbib-warnings.log",
+	"text!logs/geometry-warnings.log",
+	"text!logs/caption-warnings.log"
 ],
 function(LatexParser, errorLog, warningLog, badBoxesLog, biberWarningsLog, natbibWarningsLog, geometryWarningsLog, captionWarningsLog) {
 
-	console.log('>> test top');
-function prettyFileList(files, depth) {
-    depth = depth || "  ";
-    for (var i = 0; i < files.length; i++) {
-      console.log(depth + files[i].path);
-      prettyFileList(files[i].files, depth + "  ");
-    }
-}
+	function prettyFileList(files, depth) {
+		depth = depth || "	";
+		for (var i = 0; i < files.length; i++) {
+			console.log(depth + files[i].path);
+			prettyFileList(files[i].files, depth + "	");
+		}
+	}
 
-module("Errors");
+	module("Errors");
 
-test("Error parsing", function() {
-  var errors = LatexParser.parse(errorLog, {
-    ignoreDuplicates : true
-  }).errors;
+	test("Error parsing", function() {
+		var errors = LatexParser.parse(errorLog, {
+			ignoreDuplicates : true
+		}).errors;
 
-  var expectedErrors = [
-    [29, "Undefined control sequence."] + "",
-    [30, "LaTeX Error: \\begin{equation} on input line 28 ended by \\end{equaion}."] + "",
-    [30, "Missing $ inserted."] + "",
-    [30, "Display math should end with $$."] + "",
-    [46, "Extra }, or forgotten \\right."] + "",
-    [46, "Missing \\right. inserted."] + "",
-    [46, "Missing } inserted."] + ""
-  ];
+		var expectedErrors = [
+			[29, "Undefined control sequence."] + "",
+			[30, "LaTeX Error: \\begin{equation} on input line 28 ended by \\end{equaion}."] + "",
+			[30, "Missing $ inserted."] + "",
+			[30, "Display math should end with $$."] + "",
+			[46, "Extra }, or forgotten \\right."] + "",
+			[46, "Missing \\right. inserted."] + "",
+			[46, "Missing } inserted."] + ""
+		];
 
-  expect(expectedErrors.length);
-  for (var i = 0; i < errors.length; i++) {
-    if (expectedErrors.indexOf([errors[i].line, errors[i].message] + "") > -1) {
-      ok(true, "Found error: " + errors[i].message);
-    }
-  }
-});
+		expect(expectedErrors.length);
+		for (var i = 0; i < errors.length; i++) {
+			if (expectedErrors.indexOf([errors[i].line, errors[i].message] + "") > -1) {
+				ok(true, "Found error: " + errors[i].message);
+			}
+		}
+	});
 
-module("Bad boxes");
+	module("Bad boxes");
 
-test("Badbox parsing", function() {
-	console.log('>> test test two');
-  var errors = LatexParser.parse(badBoxesLog).typesetting;
+	test("Badbox parsing", function() {
+		var errors = LatexParser.parse(badBoxesLog).typesetting;
 
-  var expectedErrors = [
-    [9, "Overfull \\hbox (29.11179pt too wide) in paragraph at lines 9--10"] + "",
-    [11, "Underfull \\hbox (badness 10000) in paragraph at lines 11--13"] + "",
-    [27, "Overfull \\vbox (12.00034pt too high) detected at line 27"] + "",
-    [46, "Underfull \\vbox (badness 10000) detected at line 46"] + "",
-    [54, "Underfull \\hbox (badness 10000) in paragraph at lines 54--55"] + "",
-    [58, "Underfull \\hbox (badness 10000) in paragraph at lines 58--60"] + ""
-  ];
+		var expectedErrors = [
+			[9, "Overfull \\hbox (29.11179pt too wide) in paragraph at lines 9--10"] + "",
+			[11, "Underfull \\hbox (badness 10000) in paragraph at lines 11--13"] + "",
+			[27, "Overfull \\vbox (12.00034pt too high) detected at line 27"] + "",
+			[46, "Underfull \\vbox (badness 10000) detected at line 46"] + "",
+			[54, "Underfull \\hbox (badness 10000) in paragraph at lines 54--55"] + "",
+			[58, "Underfull \\hbox (badness 10000) in paragraph at lines 58--60"] + ""
+		];
 
-  expect(expectedErrors.length);
-  for (var i = 0; i < errors.length; i++) {
-    if (expectedErrors.indexOf([errors[i].line, errors[i].message] + "") > -1) {
-      ok(true, "Found error: " + errors[i].message);
-    }
-  }
-});
+		expect(expectedErrors.length);
+		for (var i = 0; i < errors.length; i++) {
+			if (expectedErrors.indexOf([errors[i].line, errors[i].message] + "") > -1) {
+				ok(true, "Found error: " + errors[i].message);
+			}
+		}
+	});
 
-module("Warnings");
+	module("Warnings");
 
-test("Warning parsing", function() {
-  var errors = LatexParser.parse(warningLog).warnings;
+	test("Warning parsing", function() {
+		var errors = LatexParser.parse(warningLog).warnings;
 
-  var expectedErrors = [
-    [7, "Citation `Lambert:2010iw' on page 1 undefined on input line 7.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/introduction.tex"] + "",
-    [7, "Citation `Lambert:2010iw' on page 1 undefined on input line 7.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/introduction.tex"] + "",
-    [72, "Citation `Manton:2004tk' on page 3 undefined on input line 72.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/instantons.tex"] + "",
-    [108, "Citation `Atiyah1978' on page 4 undefined on input line 108.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/instantons.tex"] + "",
-    [176, "Citation `Dorey:1996hu' on page 5 undefined on input line 176.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/instantons.tex"] + "",
-    [3, "Citation `Manton1982' on page 8 undefined on input line 3.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/moduli_space_approximation.tex"] + "",
-    [21, "Citation `Weinberg:2006rq' on page 9 undefined on input line 21.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/moduli_space_approximation.tex"] + "",
-    [192, "Citation `Bak:1999sv' on page 12 undefined on input line 192.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/moduli_space_approximation.tex"] + "",
-    [9, "Citation `Peeters:2001np' on page 13 undefined on input line 9.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/dynamics_of_single_instanton.tex"] + "",
-    [27, "Citation `Osborn:1981yf' on page 15 undefined on input line 27.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/dynamics_of_two_instantons.tex"] + "",
-    [27, "Citation `Peeters:2001np' on page 15 undefined on input line 27.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/dynamics_of_two_instantons.tex"] + "",
-    [20, "Citation `Osborn:1981yf' on page 22 undefined on input line 20.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/appendices.tex"] + "",
-    [103, "Citation `Osborn:1981yf' on page 23 undefined on input line 103.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/appendices.tex"] + "",
-    [103, "Citation `Peeters:2001np' on page 23 undefined on input line 103.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/appendices.tex"] + "",
-    [352, "Citation `Peeters:2001np' on page 27 undefined on input line 352.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/appendices.tex"] + ""
-  ];
+		var expectedErrors = [
+			[7, "Citation `Lambert:2010iw' on page 1 undefined on input line 7.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/introduction.tex"] + "",
+			[7, "Citation `Lambert:2010iw' on page 1 undefined on input line 7.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/introduction.tex"] + "",
+			[72, "Citation `Manton:2004tk' on page 3 undefined on input line 72.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/instantons.tex"] + "",
+			[108, "Citation `Atiyah1978' on page 4 undefined on input line 108.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/instantons.tex"] + "",
+			[176, "Citation `Dorey:1996hu' on page 5 undefined on input line 176.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/instantons.tex"] + "",
+			[3, "Citation `Manton1982' on page 8 undefined on input line 3.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/moduli_space_approximation.tex"] + "",
+			[21, "Citation `Weinberg:2006rq' on page 9 undefined on input line 21.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/moduli_space_approximation.tex"] + "",
+			[192, "Citation `Bak:1999sv' on page 12 undefined on input line 192.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/moduli_space_approximation.tex"] + "",
+			[9, "Citation `Peeters:2001np' on page 13 undefined on input line 9.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/dynamics_of_single_instanton.tex"] + "",
+			[27, "Citation `Osborn:1981yf' on page 15 undefined on input line 27.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/dynamics_of_two_instantons.tex"] + "",
+			[27, "Citation `Peeters:2001np' on page 15 undefined on input line 27.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/dynamics_of_two_instantons.tex"] + "",
+			[20, "Citation `Osborn:1981yf' on page 22 undefined on input line 20.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/appendices.tex"] + "",
+			[103, "Citation `Osborn:1981yf' on page 23 undefined on input line 103.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/appendices.tex"] + "",
+			[103, "Citation `Peeters:2001np' on page 23 undefined on input line 103.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/appendices.tex"] + "",
+			[352, "Citation `Peeters:2001np' on page 27 undefined on input line 352.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/appendices.tex"] + ""
+		];
 
-  expect(expectedErrors.length);
-  for (var i = 0; i < errors.length; i++) {
-    if (expectedErrors.indexOf([errors[i].line, errors[i].message, errors[i].file] + "") > -1) {
-      ok(true, "Found error: " + errors[i].message);
-    }
-  }
-});
+		expect(expectedErrors.length);
+		for (var i = 0; i < errors.length; i++) {
+			if (expectedErrors.indexOf([errors[i].line, errors[i].message, errors[i].file] + "") > -1) {
+				ok(true, "Found error: " + errors[i].message);
+			}
+		}
+	});
 
-module("Biber Warnings");
+	module("Biber Warnings");
 
-test("Biber Warning parsing", function() {
-  var errors = LatexParser.parse(biberWarningsLog).warnings;
+	test("Biber Warning parsing", function() {
+		var errors = LatexParser.parse(biberWarningsLog).warnings;
 
-    var expectedErrors = [
-    [null, 'Package biblatex Warning: No "backend" specified, using Biber backend. To use BibTeX, load biblatex with the "backend=bibtex" option.', "/usr/local/texlive/2013/texmf-dist/tex/latex/biblatex/biblatex.sty"] + "",
-    [null, "Package biblatex Warning: The following entry could not be found in the database: Missing3 Please verify the spelling and rerun LaTeX afterwards.", "/compile/output.bbl"] + "",
-    [null, "Package biblatex Warning: The following entry could not be found in the database: Missing2 Please verify the spelling and rerun LaTeX afterwards.", "/compile/output.bbl"] + "",
-    [null, "Package biblatex Warning: The following entry could not be found in the database: Missing1 Please verify the spelling and rerun LaTeX afterwards.", "/compile/output.bbl"] + ""
-  ];
+		var expectedErrors = [
+			[null, 'Package biblatex Warning: No "backend" specified, using Biber backend. To use BibTeX, load biblatex with the "backend=bibtex" option.', "/usr/local/texlive/2013/texmf-dist/tex/latex/biblatex/biblatex.sty"] + "",
+			[null, "Package biblatex Warning: The following entry could not be found in the database: Missing3 Please verify the spelling and rerun LaTeX afterwards.", "/compile/output.bbl"] + "",
+			[null, "Package biblatex Warning: The following entry could not be found in the database: Missing2 Please verify the spelling and rerun LaTeX afterwards.", "/compile/output.bbl"] + "",
+			[null, "Package biblatex Warning: The following entry could not be found in the database: Missing1 Please verify the spelling and rerun LaTeX afterwards.", "/compile/output.bbl"] + ""
+		];
 
-  expect(expectedErrors.length);
-  for (var i = 0; i < errors.length; i++) {
-    if (expectedErrors.indexOf([errors[i].line, errors[i].message, errors[i].file] + "") > -1) {
-      ok(true, "Found error: " + errors[i].message);
-    } else {
-      ok(false, "Unexpected error found: " + errors[i].message);
-    }
-  }
-});
+		expect(expectedErrors.length);
+		for (var i = 0; i < errors.length; i++) {
+			if (expectedErrors.indexOf([errors[i].line, errors[i].message, errors[i].file] + "") > -1) {
+				ok(true, "Found error: " + errors[i].message);
+			} else {
+				ok(false, "Unexpected error found: " + errors[i].message);
+			}
+		}
+	});
 
-module("Natbib Warnings");
+	module("Natbib Warnings");
 
-test("Natbib Warning parsing", function() {
-  var errors = LatexParser.parse(natbibWarningsLog).warnings;
+	test("Natbib Warning parsing", function() {
+		var errors = LatexParser.parse(natbibWarningsLog).warnings;
 
-    var expectedErrors = [
-    [6, "Package natbib Warning: Citation `blah' on page 1 undefined on input line 6.", "/compile/main.tex"] + "",
-    [null, "Package natbib Warning: There were undefined citations.", "/compile/main.tex"] + ""
-  ];
+		var expectedErrors = [
+			[6, "Package natbib Warning: Citation `blah' on page 1 undefined on input line 6.", "/compile/main.tex"] + "",
+			[null, "Package natbib Warning: There were undefined citations.", "/compile/main.tex"] + ""
+		];
 
-  expect(expectedErrors.length);
-  for (var i = 0; i < errors.length; i++) {
-    if (expectedErrors.indexOf([errors[i].line, errors[i].message, errors[i].file] + "") > -1) {
-      ok(true, "Found error: " + errors[i].message);
-    } else {
-      ok(false, "Unexpected error found: " + errors[i].message);
-    }
-  }
-});
+		expect(expectedErrors.length);
+		for (var i = 0; i < errors.length; i++) {
+			if (expectedErrors.indexOf([errors[i].line, errors[i].message, errors[i].file] + "") > -1) {
+				ok(true, "Found error: " + errors[i].message);
+			} else {
+				ok(false, "Unexpected error found: " + errors[i].message);
+			}
+		}
+	});
 
-module("Geometry Warnings");
+	module("Geometry Warnings");
 
-test("Geometry Warning parsing", function() {
-  var errors = LatexParser.parse(geometryWarningsLog).warnings;
+	test("Geometry Warning parsing", function() {
+		var errors = LatexParser.parse(geometryWarningsLog).warnings;
 
-    var expectedErrors = [
-    [null, "Package geometry Warning: Over-specification in `h'-direction. `width' (597.50787pt) is ignored.", "/compile/main.tex"] + "",
-    [null, "Package geometry Warning: Over-specification in `v'-direction. `height' (845.04684pt) is ignored.", "/compile/main.tex"] + ""
-  ];
+		var expectedErrors = [
+			[null, "Package geometry Warning: Over-specification in `h'-direction. `width' (597.50787pt) is ignored.", "/compile/main.tex"] + "",
+			[null, "Package geometry Warning: Over-specification in `v'-direction. `height' (845.04684pt) is ignored.", "/compile/main.tex"] + ""
+		];
 
-  expect(expectedErrors.length);
-  for (var i = 0; i < errors.length; i++) {
-    if (expectedErrors.indexOf([errors[i].line, errors[i].message, errors[i].file] + "") > -1) {
-      ok(true, "Found error: " + errors[i].message);
-    } else {
-      ok(false, "Unexpected error found: " + errors[i].message);
-    }
-  }
-});
+		expect(expectedErrors.length);
+		for (var i = 0; i < errors.length; i++) {
+			if (expectedErrors.indexOf([errors[i].line, errors[i].message, errors[i].file] + "") > -1) {
+				ok(true, "Found error: " + errors[i].message);
+			} else {
+				ok(false, "Unexpected error found: " + errors[i].message);
+			}
+		}
+	});
 
-module("Caption Warnings");
+	module("Caption Warnings");
 
-test("Caption Warning parsing", function() {
-  var errors = LatexParser.parse(captionWarningsLog).warnings;
+	test("Caption Warning parsing", function() {
+		var errors = LatexParser.parse(captionWarningsLog).warnings;
 
-    var expectedErrors = [
-    [null, "Package caption Warning: Unsupported document class (or package) detected, usage of the caption package is not recommended. See the caption package documentation for explanation.", "/usr/local/texlive/2014/texmf-dist/tex/latex/caption/caption.sty"] + "",
-    [46, "Package caption Warning: The option `hypcap=true' will be ignored for this particular \\caption on input line 46. See the caption package documentation for explanation.", "/compile/main.tex"] + ""
-  ];
+		var expectedErrors = [
+			[null, "Package caption Warning: Unsupported document class (or package) detected, usage of the caption package is not recommended. See the caption package documentation for explanation.", "/usr/local/texlive/2014/texmf-dist/tex/latex/caption/caption.sty"] + "",
+			[46, "Package caption Warning: The option `hypcap=true' will be ignored for this particular \\caption on input line 46. See the caption package documentation for explanation.", "/compile/main.tex"] + ""
+		];
 
-  expect(expectedErrors.length);
-  for (var i = 0; i < errors.length; i++) {
-    if (expectedErrors.indexOf([errors[i].line, errors[i].message, errors[i].file] + "") > -1) {
-      ok(true, "Found error: " + errors[i].message);
-    } else {
-      ok(false, "Unexpected error found: " + errors[i].message);
-    }
-  }
-});
+		expect(expectedErrors.length);
+		for (var i = 0; i < errors.length; i++) {
+			if (expectedErrors.indexOf([errors[i].line, errors[i].message, errors[i].file] + "") > -1) {
+				ok(true, "Found error: " + errors[i].message);
+			} else {
+				ok(false, "Unexpected error found: " + errors[i].message);
+			}
+		}
+	});
 
-module("General");
+	module("General");
 
-test("Ignore Duplicates", function() {
-  var errors = LatexParser.parse(errorLog).errors;
-  equal(errors.length, 10, "Duplicates included");
+	test("Ignore Duplicates", function() {
+		var errors = LatexParser.parse(errorLog).errors;
+		equal(errors.length, 10, "Duplicates included");
 
-  errors = LatexParser.parse(errorLog, {ignoreDuplicates : true}).errors;
-  equal(errors.length, 7, "Duplicates ignored");
-});
+		errors = LatexParser.parse(errorLog, {ignoreDuplicates : true}).errors;
+		equal(errors.length, 7, "Duplicates ignored");
+	});
 
-test("File paths", function() {
-  var errors = LatexParser.parse(errorLog).errors;
+	test("File paths", function() {
+		var errors = LatexParser.parse(errorLog).errors;
 
-  for (var i = 0; i < errors.length; i++) {
-      equal(errors[i].file, "compiles/dff0c37d892f346e58fc14975a16bf69/sections/appendices.tex", "File path correct")
-  }
+		for (var i = 0; i < errors.length; i++) {
+			equal(errors[i].file, "compiles/dff0c37d892f346e58fc14975a16bf69/sections/appendices.tex", "File path correct");
+		}
 
-  errors = LatexParser.parse(badBoxesLog).all;
-  for (var i = 0; i < errors.length; i++) {
-      equal(errors[i].file, "compiles/b6cf470376785e64ad84c57e3296c912/logs/bad-boxes.tex", "File path correct")
-  }
-});
-
+		errors = LatexParser.parse(badBoxesLog).all;
+		for (var i = 0; i < errors.length; i++) {
+			equal(errors[i].file, "compiles/b6cf470376785e64ad84c57e3296c912/logs/bad-boxes.tex", "File path correct");
+		}
+	});
 });
