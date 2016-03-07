@@ -208,7 +208,7 @@ function(LatexParser, BiberLogParser, errorLog, warningLog, badBoxesLog,
 	// biber-log-parser
 	module("BiberLogParser");
 
-	test("Something", function() {
+	test("Typical .blg file", function() {
 		var errors = BiberLogParser.parse(biberBlg, {});
 		console.log(errors);
 		equal(typeof errors, "object");

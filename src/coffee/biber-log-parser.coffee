@@ -19,6 +19,8 @@ define ->
 	LINE_SPLITTER_REGEX = /^\[(\d+)].*>\s(INFO|WARN|ERROR)\s-\s(.*)$/
 
 	BiberLogParser = (text, options) ->
+		if typeof text != 'string'
+			throw new Error("BiberLogParser Error: text parameter must be a string")
 		@text = text.replace(/(\r\n)|\r/g, '\n')
 		@options = options
 		@lines = text.split('\n')
