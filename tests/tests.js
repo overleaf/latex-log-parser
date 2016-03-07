@@ -209,9 +209,16 @@ function(LatexParser, BiberLogParser, errorLog, warningLog, badBoxesLog,
 	module("BiberLogParser");
 
 	test("Typical .blg file", function() {
-		var errors = BiberLogParser.parse(biberBlg, {});
-		console.log(errors);
-		equal(typeof errors, "object");
+		var result = BiberLogParser.parse(biberBlg, {});
+		console.log(result);
+		equal(typeof result, "object");
+		equal(result.all.length, 14);
+		equal(result.errors.length, 1);
+		equal(result.warnings.length, 2);
+
+		var error = result.errors[0];
+		equal(error.level, "ERROR");
+		equal(error.message, 'BibTeX subsystem: /.../.bib_46723.utf8, line 8, syntax error: at end of input, expected end of entry ("}" or ")") (skipping to next "@")');
 	});
 
 
