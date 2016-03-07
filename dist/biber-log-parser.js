@@ -6,6 +6,8 @@ define(function() {
     this.text = text.replace(/(\r\n)|\r/g, '\n');
     this.options = options;
     this.lines = text.split('\n');
+  };
+  (function() {
     return this.parse = function() {
       var result;
       result = {
@@ -38,6 +40,9 @@ define(function() {
       });
       return result;
     };
+  }).call(BiberLogParser.prototype);
+  BiberLogParser.parse = function(text, options) {
+    return new BiberLogParser(text, options).parse();
   };
   return BiberLogParser;
 });

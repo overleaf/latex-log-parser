@@ -22,7 +22,9 @@ define ->
 		@text = text.replace(/(\r\n)|\r/g, '\n')
 		@options = options
 		@lines = text.split('\n')
+		return
 
+	(->
 		@parse = () ->
 			result = {
 				all: [],
@@ -47,5 +49,9 @@ define ->
 						when 'ERROR' then result.errors.push newEntry
 						when 'WARN'  then result.warnings.push newEntry
 			return result
+	).call(BiberLogParser.prototype)
+
+	BiberLogParser.parse = (text, options) ->
+		new BiberLogParser(text, options).parse()
 
 	return BiberLogParser

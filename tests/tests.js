@@ -7,10 +7,11 @@ define([
 	"text!logs/biber-warnings.log",
 	"text!logs/natbib-warnings.log",
 	"text!logs/geometry-warnings.log",
-	"text!logs/caption-warnings.log"
+	"text!logs/caption-warnings.log",
+	"text!logs/biber.blg"
 ],
 function(LatexParser, BiberLogParser, errorLog, warningLog, badBoxesLog,
-					biberWarningsLog, natbibWarningsLog, geometryWarningsLog, captionWarningsLog) {
+				 biberWarningsLog, natbibWarningsLog, geometryWarningsLog, captionWarningsLog, biberBlg) {
 
 	function prettyFileList(files, depth) {
 		depth = depth || "	";
@@ -208,7 +209,9 @@ function(LatexParser, BiberLogParser, errorLog, warningLog, badBoxesLog,
 	module("BiberLogParser");
 
 	test("Something", function() {
-		equal(1, 1);
+		var errors = BiberLogParser.parse(biberBlg, {});
+		console.log(errors);
+		equal(typeof errors, "object");
 	});
 
 
