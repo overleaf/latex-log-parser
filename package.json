@@ -4,7 +4,7 @@
 	"description": "",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"compile": "./node_modules/.bin/coffee --bare -o dist/ src/coffee/latex-log-parser.coffee"
+		"compile": "sh ./bin/compile.sh"
 	},
 	"author": "",
 	"license": "MIT",

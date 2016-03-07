@@ -1,5 +1,6 @@
 define([
 	"../dist/latex-log-parser",
+	"../dist/biber-log-parser",
 	"text!logs/errors.log",
 	"text!logs/warnings.log",
 	"text!logs/bad-boxes.log",
@@ -8,7 +9,8 @@ define([
 	"text!logs/geometry-warnings.log",
 	"text!logs/caption-warnings.log"
 ],
-function(LatexParser, errorLog, warningLog, badBoxesLog, biberWarningsLog, natbibWarningsLog, geometryWarningsLog, captionWarningsLog) {
+function(LatexParser, BiberLogParser, errorLog, warningLog, badBoxesLog,
+					biberWarningsLog, natbibWarningsLog, geometryWarningsLog, captionWarningsLog) {
 
 	function prettyFileList(files, depth) {
 		depth = depth || "	";
@@ -200,4 +202,14 @@ function(LatexParser, errorLog, warningLog, badBoxesLog, biberWarningsLog, natbi
 			equal(errors[i].file, "compiles/b6cf470376785e64ad84c57e3296c912/logs/bad-boxes.tex", "File path correct");
 		}
 	});
+
+
+	// biber-log-parser
+	module("BiberLogParser");
+
+	test("Something", function() {
+		equal(1, 1);
+	});
+
+
 });
