@@ -216,7 +216,7 @@ function(LatexParser, BiberLogParser, errorLog, warningLog, badBoxesLog,
 		equal(result.warnings.length, 2);
 
 		var error = result.errors[0];
-		equal(error.level, "ERROR");
+		equal(error.level, "error");
 		equal(error.message, 'BibTeX subsystem: /.../.bib_46723.utf8, line 8, syntax error: at end of input, expected end of entry ("}" or ")") (skipping to next "@")');
 	});
 

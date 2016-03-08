@@ -18,6 +18,12 @@ define ->
 	# [fullLine, lineNumber, messageType, message]
 	LINE_SPLITTER_REGEX = /^\[(\d+)].*>\s(INFO|WARN|ERROR)\s-\s(.*)$/
 
+	MESSAGE_LEVELS = {
+		"INFO": "info"
+		"WARN": "warning"
+		"ERROR": "error"
+	}
+
 	BiberLogParser = (text, options) ->
 		if typeof text != 'string'
 			throw new Error("BiberLogParser Error: text parameter must be a string")
@@ -41,15 +47,15 @@ define ->
 					[fullLine, lineNumber, messageType, message] = match
 					newEntry = {
 						file: null,
-						level: messageType,
+						level: MESSAGE_LEVELS[messageType] || "INFO",
 						message: message,
 						line: null,
 						raw: fullLine
 					}
 					result.all.push newEntry
 					switch newEntry.level
-						when 'ERROR' then result.errors.push newEntry
-						when 'WARN'  then result.warnings.push newEntry
+						when 'error' then result.errors.push newEntry
+						when 'warning'  then result.warnings.push newEntry
 			return result
 	).call(BiberLogParser.prototype)
 
