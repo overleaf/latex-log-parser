@@ -210,7 +210,6 @@ function(LatexParser, BiberLogParser, errorLog, warningLog, badBoxesLog,
 
 	test("Typical .blg file", function() {
 		var result = BiberLogParser.parse(biberBlg, {});
-		console.log(result);
 		equal(typeof result, "object");
 		equal(result.all.length, 14);
 		equal(result.errors.length, 1);
@@ -219,6 +218,30 @@ function(LatexParser, BiberLogParser, errorLog, warningLog, badBoxesLog,
 		var error = result.errors[0];
 		equal(error.level, "ERROR");
 		equal(error.message, 'BibTeX subsystem: /.../.bib_46723.utf8, line 8, syntax error: at end of input, expected end of entry ("}" or ")") (skipping to next "@")');
+	});
+
+	test("Not a .blg file", function() {
+		var result = BiberLogParser.parse(captionWarningsLog);
+		equal(typeof result, "object");
+		equal(result.all.length, 0);
+		equal(result.errors.length, 0);
+		equal(result.warnings.length, 0);
+	});
+
+	test("Empty string", function() {
+		var result = BiberLogParser.parse("");
+		equal(typeof result, "object");
+		equal(result.all.length, 0);
+		equal(result.errors.length, 0);
+		equal(result.warnings.length, 0);
+	});
+
+	test("Not a string", function() {
+		try {
+			var result = BiberLogParser.parse({a: 1});
+		} catch(e) {
+			ok(true, "Should throw an error");
+		}
 	});
 
 
