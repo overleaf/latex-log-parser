@@ -217,7 +217,9 @@ function(LatexParser, BiberLogParser, errorLog, warningLog, badBoxesLog,
 
 		var error = result.errors[0];
 		equal(error.level, "error");
-		equal(error.message, 'BibTeX subsystem: /.../.bib_46723.utf8, line 8, syntax error: at end of input, expected end of entry ("}" or ")") (skipping to next "@")');
+		equal(error.line, "8");
+		equal(error.file, "bibliography.bib");
+		equal(error.message, 'syntax error: at end of input, expected end of entry ("}" or ")") (skipping to next "@")');
 	});
 
 	test("Not a .blg file", function() {

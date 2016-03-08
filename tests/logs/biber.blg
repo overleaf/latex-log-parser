@@ -8,7 +8,7 @@
 [186] bibtex.pm:1021> INFO - Decoding LaTeX character macros into UTF-8
 [187] bibtex.pm:895> INFO - Found BibTeX data source 'bibliography.bib'
 [187] Utils.pm:146> WARN - Entry small does not parse correctly
-[187] Utils.pm:146> WARN - BibTeX subsystem: /.../.bib_46723.utf8, line 4, warning: possible runaway string started at line 3
-[187] Utils.pm:162> ERROR - BibTeX subsystem: /.../.bib_46723.utf8, line 8, syntax error: at end of input, expected end of entry ("}" or ")") (skipping to next "@")
+[187] Utils.pm:146> WARN - BibTeX subsystem: /var/folders/xz/jm214r5n7dv36_q3nclqxvpm0000gn/T/w5cKkglymq/bibliography.bib_46723.utf8, line 4, warning: possible runaway string started at line 3
+[187] Utils.pm:162> ERROR - BibTeX subsystem: /var/folders/xz/jm214r5n7dv36_q3nclqxvpm0000gn/T/w5cKkglymq/bibliography.bib_46723.utf8, line 8, syntax error: at end of input, expected end of entry ("}" or ")") (skipping to next "@")
 [188] Biber.pm:106> INFO - WARNINGS: 2
 [188] Biber.pm:110> INFO - ERRORS: 1

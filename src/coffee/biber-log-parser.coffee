@@ -28,7 +28,7 @@ define ->
 		if typeof text != 'string'
 			throw new Error("BiberLogParser Error: text parameter must be a string")
 		@text = text.replace(/(\r\n)|\r/g, '\n')
-		@options = options
+		@options = options || {}
 		@lines = text.split('\n')
 		return
 
@@ -52,6 +52,12 @@ define ->
 						line: null,
 						raw: fullLine
 					}
+					lineMatch = newEntry.message.match(/^BibTeX subsystem: \/.*\/(\w*\.\w*)_.*, line (\d+), (.*)$/)
+					if lineMatch && lineMatch.length == 4
+						[_, fileName, lineNumber, realMessage] = lineMatch
+						newEntry.file = fileName
+						newEntry.line = lineNumber
+						newEntry.message = realMessage
 					result.all.push newEntry
 					switch newEntry.level
 						when 'error' then result.errors.push newEntry
