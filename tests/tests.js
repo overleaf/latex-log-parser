@@ -1,6 +1,6 @@
 define([
 	"../dist/latex-log-parser",
-	"../dist/biber-log-parser",
+	"../dist/bib-log-parser",
 	"text!logs/errors.log",
 	"text!logs/warnings.log",
 	"text!logs/bad-boxes.log",
@@ -10,7 +10,7 @@ define([
 	"text!logs/caption-warnings.log",
 	"text!logs/biber.blg"
 ],
-function(LatexParser, BiberLogParser, errorLog, warningLog, badBoxesLog,
+function(LatexParser, BibLogParser, errorLog, warningLog, badBoxesLog,
 				 biberWarningsLog, natbibWarningsLog, geometryWarningsLog, captionWarningsLog, biberBlg) {
 
 	function prettyFileList(files, depth) {
@@ -209,7 +209,7 @@ function(LatexParser, BiberLogParser, errorLog, warningLog, badBoxesLog,
 	module("BiberLogParser");
 
 	test("Typical .blg file", function() {
-		var result = BiberLogParser.parse(biberBlg, {});
+		var result = BibLogParser.parse(biberBlg, {});
 		equal(typeof result, "object");
 		equal(result.all.length, 14);
 		equal(result.errors.length, 1);
@@ -223,7 +223,7 @@ function(LatexParser, BiberLogParser, errorLog, warningLog, badBoxesLog,
 	});
 
 	test("Not a .blg file", function() {
-		var result = BiberLogParser.parse(captionWarningsLog);
+		var result = BibLogParser.parse(captionWarningsLog);
 		equal(typeof result, "object");
 		equal(result.all.length, 0);
 		equal(result.errors.length, 0);
@@ -231,7 +231,7 @@ function(LatexParser, BiberLogParser, errorLog, warningLog, badBoxesLog,
 	});
 
 	test("Empty string", function() {
-		var result = BiberLogParser.parse("");
+		var result = BibLogParser.parse("");
 		equal(typeof result, "object");
 		equal(result.all.length, 0);
 		equal(result.errors.length, 0);
@@ -240,7 +240,7 @@ function(LatexParser, BiberLogParser, errorLog, warningLog, badBoxesLog,
 
 	test("Not a string", function() {
 		try {
-			var result = BiberLogParser.parse({a: 1});
+			var result = BibLogParser.parse({a: 1});
 		} catch(e) {
 			ok(true, "Should throw an error");
 		}

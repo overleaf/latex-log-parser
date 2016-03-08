@@ -9,9 +9,9 @@ define ->
 		"ERROR": "error"
 	}
 
-	BiberLogParser = (text, options) ->
+	BibLogParser = (text, options) ->
 		if typeof text != 'string'
-			throw new Error("BiberLogParser Error: text parameter must be a string")
+			throw new Error("BibLogParser Error: text parameter must be a string")
 		@text = text.replace(/(\r\n)|\r/g, '\n')
 		@options = options || {}
 		@lines = text.split('\n')
@@ -50,9 +50,9 @@ define ->
 						when 'error' then result.errors.push newEntry
 						when 'warning'  then result.warnings.push newEntry
 			return result
-	).call(BiberLogParser.prototype)
+	).call(BibLogParser.prototype)
 
-	BiberLogParser.parse = (text, options) ->
-		new BiberLogParser(text, options).parse()
+	BibLogParser.parse = (text, options) ->
+		new BibLogParser(text, options).parse()
 
-	return BiberLogParser
+	return BibLogParser
