@@ -18,7 +18,7 @@ define ->
 		return
 
 	(->
-		@parse = () ->
+		@parseBiber = () ->
 			result = {
 				all: [],
 				errors: [],
@@ -50,6 +50,14 @@ define ->
 						when 'error' then result.errors.push newEntry
 						when 'warning'  then result.warnings.push newEntry
 			return result
+
+		@parse = () ->
+			if @lines[0].match(/^.*INFO - This is Biber.*$/)
+				@parseBiber()
+			else
+				# temporary
+				@parseBiber()
+
 	).call(BibLogParser.prototype)
 
 	BibLogParser.parse = (text, options) ->

@@ -16,7 +16,7 @@ define(function() {
     this.lines = text.split('\n');
   };
   (function() {
-    return this.parse = function() {
+    this.parseBiber = function() {
       var result;
       result = {
         all: [],
@@ -54,6 +54,13 @@ define(function() {
         }
       });
       return result;
+    };
+    return this.parse = function() {
+      if (this.lines[0].match(/^.*INFO - This is Biber.*$/)) {
+        return this.parseBiber();
+      } else {
+        return this.parseBiber();
+      }
     };
   }).call(BibLogParser.prototype);
   BibLogParser.parse = function(text, options) {
