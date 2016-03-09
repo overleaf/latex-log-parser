@@ -16,6 +16,17 @@ define(function() {
     this.lines = text.split('\n');
   };
   (function() {
+    this.parseBibtex = function() {
+      var result;
+      result = {
+        all: [],
+        errors: [],
+        warnings: [],
+        files: [],
+        typesetting: []
+      };
+      return result;
+    };
     this.parseBiber = function() {
       var result;
       result = {
@@ -56,10 +67,14 @@ define(function() {
       return result;
     };
     return this.parse = function() {
-      if (this.lines[0].match(/^.*INFO - This is Biber.*$/)) {
+      var firstLine;
+      firstLine = this.lines[0];
+      if (firstLine.match(/^.*INFO - This is Biber.*$/)) {
         return this.parseBiber();
+      } else if (firstLine.match(/^This is BibTeX, Version.+$/)) {
+        return this.parseBibtex();
       } else {
-        return this.parseBiber();
+        throw new Error("BibLogParser Error: cannot determine whether text is biber or bibtex output");
       }
     };
   }).call(BibLogParser.prototype);

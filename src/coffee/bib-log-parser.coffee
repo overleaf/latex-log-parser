@@ -18,6 +18,16 @@ define ->
 		return
 
 	(->
+		@parseBibtex = () ->
+			result = {
+				all: [],
+				errors: [],
+				warnings: [],
+				files: [],       # not used
+				typesetting: []  # not used
+			}
+			return result
+
 		@parseBiber = () ->
 			result = {
 				all: [],
@@ -52,11 +62,13 @@ define ->
 			return result
 
 		@parse = () ->
-			if @lines[0].match(/^.*INFO - This is Biber.*$/)
+			firstLine = @lines[0]
+			if firstLine.match(/^.*INFO - This is Biber.*$/)
 				@parseBiber()
+			else if firstLine.match(/^This is BibTeX, Version.+$/)
+				@parseBibtex()
 			else
-				# temporary
-				@parseBiber()
+				throw new Error("BibLogParser Error: cannot determine whether text is biber or bibtex output")
 
 	).call(BibLogParser.prototype)
 

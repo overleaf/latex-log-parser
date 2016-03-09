@@ -208,7 +208,7 @@ function(LatexParser, BibLogParser, errorLog, warningLog, badBoxesLog,
 	// biber-log-parser
 	module("BiberLogParser");
 
-	test("Typical .blg file", function() {
+	test("Typical biber .blg file", function() {
 		var result = BibLogParser.parse(biberBlg, {});
 		equal(typeof result, "object");
 		equal(result.all.length, 14);
@@ -223,19 +223,19 @@ function(LatexParser, BibLogParser, errorLog, warningLog, badBoxesLog,
 	});
 
 	test("Not a .blg file", function() {
-		var result = BibLogParser.parse(captionWarningsLog);
-		equal(typeof result, "object");
-		equal(result.all.length, 0);
-		equal(result.errors.length, 0);
-		equal(result.warnings.length, 0);
+		try {
+			var result = BibLogParser.parse(captionWarningsLog);
+		} catch(e) {
+			ok(true, "Should throw an error");
+		}
 	});
 
 	test("Empty string", function() {
-		var result = BibLogParser.parse("");
-		equal(typeof result, "object");
-		equal(result.all.length, 0);
-		equal(result.errors.length, 0);
-		equal(result.warnings.length, 0);
+		try {
+			var result = BibLogParser.parse('');
+		} catch(e) {
+			ok(true, "Should throw an error");
+		}
 	});
 
 	test("Not a string", function() {
