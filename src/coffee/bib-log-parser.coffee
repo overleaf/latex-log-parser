@@ -17,11 +17,7 @@ define ->
 		@lines = text.split('\n')
 		return
 
-
-	MULTILINE_WARNING_REGEX = /^Warning--(.+)\n--line (\d+) of file (.+)$/m
-	SINGLELINE_WARNING_REGEX = /^Warning--(.+)$/m
-
-	consume = (logText, regex) ->
+	consume = (logText, regex, process) ->
 		text = logText
 		result = []
 		re = regex
@@ -30,21 +26,17 @@ define ->
 			iterationCount += 1
 			if iterationCount >= 10000
 				return result
-			[fullMatch, message, lineNumber, fileName] = match
-			index = match.index
-			newEntry = {
-				file: fileName,
-				level: "warning",
-				message: message,
-				line: lineNumber,
-				raw: fullMatch
-			}
+			newEntry = process(match)
 			result.push newEntry
 			text = (
-				(match.input.slice(0, index)) +
-				(match.input.slice(index+fullMatch.length+1, match.input.length))
+				(match.input.slice(0, match.index)) +
+				(match.input.slice(match.index+match[0].length+1, match.input.length))
 			)
 		return [result, text]
+
+	MULTILINE_WARNING_REGEX = /^Warning--(.+)\n--line (\d+) of file (.+)$/m
+	SINGLELINE_WARNING_REGEX = /^Warning--(.+)$/m
+	MULTILINE_ERROR_REGEX = /^(.*)---line (\d+) of file (.*)\n([^]+)\nI'm skipping whatever remains of this entry$/m
 
 	(->
 		@parseBibtex = () ->
@@ -55,10 +47,26 @@ define ->
 				files: [],       # not used
 				typesetting: []  # not used
 			}
-			[multiLineWarnings, remainingText] = consume(@text, MULTILINE_WARNING_REGEX)
+			[multiLineWarnings, remainingText] = consume @text, MULTILINE_WARNING_REGEX, (match) ->
+				[fullMatch, message, lineNumber, fileName] = match
+				{
+					file: fileName,
+					level: "warning",
+					message: message,
+					line: lineNumber,
+					raw: fullMatch
+				}
 			result.all = multiLineWarnings
 			result.warnings = multiLineWarnings
-			[singleLineWarnings, remainingText] = consume(remainingText, SINGLELINE_WARNING_REGEX)
+			[singleLineWarnings, remainingText] = consume remainingText, SINGLELINE_WARNING_REGEX, (match) ->
+				[fullMatch, message] = match
+				{
+					file: null,
+					level: "warning",
+					message: message,
+					line: null,
+					raw: fullMatch
+				}
 			result.all = result.all.concat(singleLineWarnings)
 			result.warnings = result.warnings.concat(singleLineWarnings)
 			return result
