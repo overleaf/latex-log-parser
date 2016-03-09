@@ -24,7 +24,11 @@ define ->
 	consume = (logText, regex) ->
 		result = []
 		re = regex
+		iterationCount = 0
 		while match = re.exec(logText)
+			iterationCount += 1
+			if iterationCount >= 10000
+				return result
 			[fullMatch, message, lineNumber, fileName] = match
 			index = match.index
 			newEntry = {

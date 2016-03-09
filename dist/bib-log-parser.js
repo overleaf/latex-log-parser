@@ -18,10 +18,15 @@ define(function() {
   MULTILINE_WARNING_REGEX = /^Warning--(.+)\n--line (\d+) of file (.+)$/m;
   SINGLELINE_WARNING_REGEX = /^Warning--(.+)$/m;
   consume = function(logText, regex) {
-    var fileName, fullMatch, index, lineNumber, match, message, newEntry, re, result;
+    var fileName, fullMatch, index, iterationCount, lineNumber, match, message, newEntry, re, result;
     result = [];
     re = regex;
+    iterationCount = 0;
     while (match = re.exec(logText)) {
+      iterationCount += 1;
+      if (iterationCount >= 10000) {
+        return result;
+      }
       fullMatch = match[0], message = match[1], lineNumber = match[2], fileName = match[3];
       index = match.index;
       newEntry = {
