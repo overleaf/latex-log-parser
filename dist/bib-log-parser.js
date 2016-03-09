@@ -34,10 +34,10 @@ define(function() {
   };
   MULTILINE_WARNING_REGEX = /^Warning--(.+)\n--line (\d+) of file (.+)$/m;
   SINGLELINE_WARNING_REGEX = /^Warning--(.+)$/m;
-  MULTILINE_ERROR_REGEX = /^(.*)---line (\d+) of file (.*)\n([^]+)\nI'm skipping whatever remains of this entry$/m;
+  MULTILINE_ERROR_REGEX = /^(.*)---line (\d+) of file (.*)\n([^]+?)\nI'm skipping whatever remains of this entry$/m;
   (function() {
     this.parseBibtex = function() {
-      var multiLineWarnings, ref, ref1, remainingText, result, singleLineWarnings;
+      var multiLineErrors, multiLineWarnings, ref, ref1, ref2, remainingText, result, singleLineWarnings;
       result = {
         all: [],
         errors: [],
@@ -71,6 +71,19 @@ define(function() {
       }), singleLineWarnings = ref1[0], remainingText = ref1[1];
       result.all = result.all.concat(singleLineWarnings);
       result.warnings = result.warnings.concat(singleLineWarnings);
+      ref2 = consume(remainingText, MULTILINE_ERROR_REGEX, function(match) {
+        var fileName, firstMessage, fullMatch, lineNumber, secondMessage;
+        fullMatch = match[0], firstMessage = match[1], lineNumber = match[2], fileName = match[3], secondMessage = match[4];
+        return {
+          file: fileName,
+          level: "error",
+          message: firstMessage + '\n' + secondMessage,
+          line: lineNumber,
+          raw: fullMatch
+        };
+      }), multiLineErrors = ref2[0], remainingText = ref2[1];
+      result.all = result.all.concat(multiLineErrors);
+      result.errors = multiLineErrors;
       return result;
     };
     this.parseBiber = function() {

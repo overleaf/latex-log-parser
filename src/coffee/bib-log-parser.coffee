@@ -36,7 +36,7 @@ define ->
 
 	MULTILINE_WARNING_REGEX = /^Warning--(.+)\n--line (\d+) of file (.+)$/m
 	SINGLELINE_WARNING_REGEX = /^Warning--(.+)$/m
-	MULTILINE_ERROR_REGEX = /^(.*)---line (\d+) of file (.*)\n([^]+)\nI'm skipping whatever remains of this entry$/m
+	MULTILINE_ERROR_REGEX = /^(.*)---line (\d+) of file (.*)\n([^]+?)\nI'm skipping whatever remains of this entry$/m
 
 	(->
 		@parseBibtex = () ->
@@ -69,6 +69,17 @@ define ->
 				}
 			result.all = result.all.concat(singleLineWarnings)
 			result.warnings = result.warnings.concat(singleLineWarnings)
+			[multiLineErrors, remainingText] = consume remainingText, MULTILINE_ERROR_REGEX, (match) ->
+				[fullMatch, firstMessage, lineNumber, fileName, secondMessage] = match
+				{
+					file: fileName,
+					level: "error",
+					message: firstMessage + '\n' + secondMessage,
+					line: lineNumber,
+					raw: fullMatch
+				}
+			result.all = result.all.concat(multiLineErrors)
+			result.errors = multiLineErrors
 			return result
 
 		@parseBiber = () ->
