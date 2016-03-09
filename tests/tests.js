@@ -251,6 +251,14 @@ function(LatexParser, BibLogParser, errorLog, warningLog, badBoxesLog,
 		var result = BibLogParser.parse(bibtexBlg, {});
 		console.log(result);
 		equal(typeof result, "object");
+		equal(result.all.length, 2);
+		equal(result.warnings.length, 2);
+		var firstWarning = result.warnings[0];
+		equal(firstWarning.file, "references.bib");
+		equal(firstWarning.line, "152");
+		equal(firstWarning.message, 'string name "something" is undefined');
+
+
 	});
 
 });
