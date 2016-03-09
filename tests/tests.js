@@ -251,8 +251,8 @@ function(LatexParser, BibLogParser, errorLog, warningLog, badBoxesLog,
 		var result = BibLogParser.parse(bibtexBlg, {});
 		console.log(result);
 		equal(typeof result, "object");
-		equal(result.all.length, 2);
-		equal(result.warnings.length, 2);
+		equal(result.all.length, 6);
+		equal(result.warnings.length, 6);
 		var firstWarning = result.warnings[0];
 		equal(firstWarning.file, "references.bib");
 		equal(firstWarning.line, "152");

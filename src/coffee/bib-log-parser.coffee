@@ -22,10 +22,11 @@ define ->
 	SINGLELINE_WARNING_REGEX = /^Warning--(.+)$/m
 
 	consume = (logText, regex) ->
+		text = logText
 		result = []
 		re = regex
 		iterationCount = 0
-		while match = re.exec(logText)
+		while match = re.exec(text)
 			iterationCount += 1
 			if iterationCount >= 10000
 				return result
@@ -39,14 +40,11 @@ define ->
 				raw: fullMatch
 			}
 			result.push newEntry
-			logText = (
+			text = (
 				(match.input.slice(0, index)) +
 				(match.input.slice(index+fullMatch.length+1, match.input.length))
 			)
-		return result
-
-	consumeMultilineWarnings = (logText) ->
-		consume(logText, MULTILINE_WARNING_REGEX)
+		return [result, text]
 
 	(->
 		@parseBibtex = () ->
@@ -57,9 +55,12 @@ define ->
 				files: [],       # not used
 				typesetting: []  # not used
 			}
-			multilineWarnings = consumeMultilineWarnings(@text)
-			result.all = multilineWarnings
-			result.warnings = multilineWarnings
+			[multiLineWarnings, remainingText] = consume(@text, MULTILINE_WARNING_REGEX)
+			result.all = multiLineWarnings
+			result.warnings = multiLineWarnings
+			[singleLineWarnings, remainingText] = consume(remainingText, SINGLELINE_WARNING_REGEX)
+			result.all = result.all.concat(singleLineWarnings)
+			result.warnings = result.warnings.concat(singleLineWarnings)
 			return result
 
 		@parseBiber = () ->
