@@ -17,9 +17,13 @@ define ->
 		@lines = text.split('\n')
 		return
 
-	consumeMultilineWarnings = (logText) ->
+
+	MULTILINE_WARNING_REGEX = /^Warning--(.+)\n--line (\d+) of file (.+)$/m
+	SINGLELINE_WARNING_REGEX = /^Warning--(.+)$/m
+
+	consume = (logText, regex) ->
 		result = []
-		re = /^Warning--(.+)\n--line (\d+) of file (.+)$/m
+		re = regex
 		while match = re.exec(logText)
 			[fullMatch, message, lineNumber, fileName] = match
 			index = match.index
@@ -36,6 +40,9 @@ define ->
 				(match.input.slice(index+fullMatch.length+1, match.input.length))
 			)
 		return result
+
+	consumeMultilineWarnings = (logText) ->
+		consume(logText, MULTILINE_WARNING_REGEX)
 
 	(->
 		@parseBibtex = () ->
