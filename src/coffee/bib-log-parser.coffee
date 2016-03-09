@@ -17,6 +17,26 @@ define ->
 		@lines = text.split('\n')
 		return
 
+	consumeMultilineWarnings = (logText) ->
+		result = []
+		re = /^Warning--(.+)\n--line (\d+) of file (.+)$/m
+		while match = re.exec(logText)
+			[fullMatch, message, lineNumber, fileName] = match
+			index = match.index
+			newEntry = {
+				file: fileName,
+				level: "warning",
+				message: message,
+				line: lineNumber,
+				raw: fullMatch
+			}
+			result.push newEntry
+			logText = (
+				(match.input.slice(0, index)) +
+				(match.input.slice(index+fullMatch.length+1, match.input.length))
+			)
+		return result
+
 	(->
 		@parseBibtex = () ->
 			result = {
@@ -26,6 +46,9 @@ define ->
 				files: [],       # not used
 				typesetting: []  # not used
 			}
+			multilineWarnings = consumeMultilineWarnings(@text)
+			result.all = multilineWarnings
+			result.warnings = multilineWarnings
 			return result
 
 		@parseBiber = () ->

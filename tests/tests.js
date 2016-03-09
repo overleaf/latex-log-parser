@@ -8,10 +8,11 @@ define([
 	"text!logs/natbib-warnings.log",
 	"text!logs/geometry-warnings.log",
 	"text!logs/caption-warnings.log",
-	"text!logs/biber.blg"
+	"text!logs/biber.blg",
+	"text!logs/bibtex.blg"
 ],
 function(LatexParser, BibLogParser, errorLog, warningLog, badBoxesLog,
-				 biberWarningsLog, natbibWarningsLog, geometryWarningsLog, captionWarningsLog, biberBlg) {
+				 biberWarningsLog, natbibWarningsLog, geometryWarningsLog, captionWarningsLog, biberBlg, bibtexBlg) {
 
 	function prettyFileList(files, depth) {
 		depth = depth || "	";
@@ -206,7 +207,7 @@ function(LatexParser, BibLogParser, errorLog, warningLog, badBoxesLog,
 
 
 	// biber-log-parser
-	module("BiberLogParser");
+	module("BibLogParser");
 
 	test("Typical biber .blg file", function() {
 		var result = BibLogParser.parse(biberBlg, {});
@@ -246,5 +247,10 @@ function(LatexParser, BibLogParser, errorLog, warningLog, badBoxesLog,
 		}
 	});
 
+	test("typical bibtex .blg file", function() {
+		var result = BibLogParser.parse(bibtexBlg, {});
+		console.log(result);
+		equal(typeof result, "object");
+	});
 
 });
