@@ -37,6 +37,7 @@ define ->
 	MULTILINE_WARNING_REGEX = /^Warning--(.+)\n--line (\d+) of file (.+)$/m
 	SINGLELINE_WARNING_REGEX = /^Warning--(.+)$/m
 	MULTILINE_ERROR_REGEX = /^(.*)---line (\d+) of file (.*)\n([^]+?)\nI'm skipping whatever remains of this entry$/m
+	BAD_CROSS_REFERENCE_REGEX = /^(A bad cross reference---entry ".+?"\nrefers to entry.+?, which doesn't exist)$/m
 
 	(->
 		@parseBibtex = () ->
@@ -80,6 +81,17 @@ define ->
 				}
 			result.all = result.all.concat(multiLineErrors)
 			result.errors = multiLineErrors
+			[crossReferenceErrors, remainingText] = consume remainingText, BAD_CROSS_REFERENCE_REGEX, (match) ->
+				[fullMatch, message] = match
+				{
+					file: null,
+					level: "error",
+					message: message,
+					line: null,
+					raw: fullMatch
+				}
+			result.all = result.all.concat(crossReferenceErrors)
+			result.errors = result.errors.concat(crossReferenceErrors)
 			return result
 
 		@parseBiber = () ->

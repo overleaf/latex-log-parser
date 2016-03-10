@@ -36,6 +36,8 @@ Warning--empty publisher in Binney87
 Warning--string name "august" is undefined
 --line 152 of file references.bib
 Warning--empty note in Svensmark14
+A bad cross reference---entry "conf/icde/FilhoTTF01"
+refers to entry "conf/icde/2001", which doesn't exist
 You've used 48 entries,
             3010 wiz_defined-function locations,
             957 strings with 17710 characters,

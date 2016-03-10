@@ -251,23 +251,29 @@ function(LatexParser, BibLogParser, errorLog, warningLog, badBoxesLog,
 		var result = BibLogParser.parse(bibtexBlg, {});
 		console.log(result);
 		equal(typeof result, "object");
-		equal(result.all.length, 11);
-		equal(result.warnings.length, 6);
-		equal(result.errors.length, 5);
+		equal(result.all.length, 12);
 
+		equal(result.warnings.length, 6);
 		var firstWarning = result.warnings[0];
 		equal(firstWarning.file, "references.bib");
 		equal(firstWarning.line, "152");
+		equal(firstWarning.level, "warning");
 		equal(firstWarning.message, 'string name "something" is undefined');
 
 		var thirdWarning = result.warnings[2];
 		equal(thirdWarning.message, "can't use both author and editor fields in Binney87");
 
+		equal(result.errors.length, 6);
 		var firstError = result.errors[0];
 		equal(firstError.file, 'references.bib');
 		equal(firstError.line, '196');
+		equal(firstError.level, 'error');
 		equal(firstError.message.indexOf("I was expecting a `,' or a `}'"), 0);
 		equal(firstError.message.indexOf("(Error may have been on previous line)") > 0, true);
+		var crossReferenceError = result.errors[5];
+		equal(crossReferenceError.level, 'error');
+		equal(crossReferenceError.message.indexOf('A bad cross reference'), 0);
+		equal(crossReferenceError.message.indexOf('A bad cross reference'), 0);
 	});
 
 });
