@@ -60,10 +60,10 @@ define ->
 			(match) ->
 				[fullMatch, message] = match
 				{
-					file: null,
+					file: '',
 					level: "warning",
 					message: message,
-					line: null,
+					line: '',
 					raw: fullMatch
 				}
 		]
@@ -86,10 +86,10 @@ define ->
 			(match) ->
 				[fullMatch, message] = match
 				{
-					file: null,
+					file: '',
 					level: "error",
 					message: message,
-					line: null,
+					line: '',
 					raw: fullMatch
 				}
 		],
@@ -151,10 +151,10 @@ define ->
 				if match
 					[fullLine, lineNumber, messageType, message] = match
 					newEntry = {
-						file: null,
+						file: '',
 						level: MESSAGE_LEVELS[messageType] || "INFO",
 						message: message,
-						line: null,
+						line: '',
 						raw: fullLine
 					}
 					# try extract file, line-number and the 'real' message from lines like:
