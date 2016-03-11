@@ -39,6 +39,61 @@ define ->
 	MULTILINE_ERROR_REGEX = /^(.*)---line (\d+) of file (.*)\n([^]+?)\nI'm skipping whatever remains of this entry$/m
 	BAD_CROSS_REFERENCE_REGEX = /^(A bad cross reference---entry ".+?"\nrefers to entry.+?, which doesn't exist)$/m
 
+	# each parser is a pair of [regex, processFunction], where processFunction
+	# describes how to transform the regex mactch into a log entry object.
+	warningParsers = [
+		[
+			MULTILINE_WARNING_REGEX,
+			(match) ->
+				[fullMatch, message, lineNumber, fileName] = match
+				{
+					file: fileName,
+					level: "warning",
+					message: message,
+					line: lineNumber,
+					raw: fullMatch
+				}
+		],
+		[
+			SINGLELINE_WARNING_REGEX,
+			(match) ->
+				[fullMatch, message] = match
+				{
+					file: null,
+					level: "warning",
+					message: message,
+					line: null,
+					raw: fullMatch
+				}
+		]
+	]
+	errorParsers = [
+		[
+			MULTILINE_ERROR_REGEX,
+			(match) ->
+				[fullMatch, firstMessage, lineNumber, fileName, secondMessage] = match
+				{
+					file: fileName,
+					level: "error",
+					message: firstMessage + '\n' + secondMessage,
+					line: lineNumber,
+					raw: fullMatch
+				}
+		],
+		[
+			BAD_CROSS_REFERENCE_REGEX,
+			(match) ->
+				[fullMatch, message] = match
+				{
+					file: null,
+					level: "error",
+					message: message,
+					line: null,
+					raw: fullMatch
+				}
+		]
+	]
+
 	(->
 		@parseBibtex = () ->
 			result = {
@@ -48,50 +103,26 @@ define ->
 				files: [],       # not used
 				typesetting: []  # not used
 			}
-			[multiLineWarnings, remainingText] = consume @text, MULTILINE_WARNING_REGEX, (match) ->
-				[fullMatch, message, lineNumber, fileName] = match
-				{
-					file: fileName,
-					level: "warning",
-					message: message,
-					line: lineNumber,
-					raw: fullMatch
-				}
-			result.all = multiLineWarnings
-			result.warnings = multiLineWarnings
-			[singleLineWarnings, remainingText] = consume remainingText, SINGLELINE_WARNING_REGEX, (match) ->
-				[fullMatch, message] = match
-				{
-					file: null,
-					level: "warning",
-					message: message,
-					line: null,
-					raw: fullMatch
-				}
-			result.all = result.all.concat(singleLineWarnings)
-			result.warnings = result.warnings.concat(singleLineWarnings)
-			[multiLineErrors, remainingText] = consume remainingText, MULTILINE_ERROR_REGEX, (match) ->
-				[fullMatch, firstMessage, lineNumber, fileName, secondMessage] = match
-				{
-					file: fileName,
-					level: "error",
-					message: firstMessage + '\n' + secondMessage,
-					line: lineNumber,
-					raw: fullMatch
-				}
-			result.all = result.all.concat(multiLineErrors)
-			result.errors = multiLineErrors
-			[crossReferenceErrors, remainingText] = consume remainingText, BAD_CROSS_REFERENCE_REGEX, (match) ->
-				[fullMatch, message] = match
-				{
-					file: null,
-					level: "error",
-					message: message,
-					line: null,
-					raw: fullMatch
-				}
-			result.all = result.all.concat(crossReferenceErrors)
-			result.errors = result.errors.concat(crossReferenceErrors)
+			# reduce over the parsers, starting with the log text,
+			[allWarnings, remainingText] = warningParsers.reduce(
+				(accumulator, parser) ->
+					[currentWarnings, text] = accumulator
+					[regex, process] = parser
+					[warnings, _remainingText] = consume text, regex, process
+					return [currentWarnings.concat(warnings), _remainingText]
+				, [[], @text]
+			)
+			[allErrors, remainingText] = errorParsers.reduce(
+				(accumulator, parser) ->
+					[currentErrors, text] = accumulator
+					[regex, process] = parser
+					[errors, _remainingText] = consume text, regex, process
+					return [currentErrors.concat(errors), _remainingText]
+				, [[], remainingText]
+			)
+			result.warnings = allWarnings
+			result.errors = allErrors
+			result.all = allWarnings.concat(allErrors)
 			return result
 
 		@parseBiber = () ->
