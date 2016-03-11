@@ -38,6 +38,11 @@ Warning--string name "august" is undefined
 Warning--empty note in Svensmark14
 A bad cross reference---entry "conf/icde/FilhoTTF01"
 refers to entry "conf/icde/2001", which doesn't exist
+I couldn't open style file aa.bst
+---line 31 of file output.aux
+ : \bibstyle{aa
+ :             }
+I'm skipping whatever remains of this command
 You've used 48 entries,
             3010 wiz_defined-function locations,
             957 strings with 17710 characters,

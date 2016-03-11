@@ -251,7 +251,7 @@ function(LatexParser, BibLogParser, errorLog, warningLog, badBoxesLog,
 		var result = BibLogParser.parse(bibtexBlg, {});
 		console.log(result);
 		equal(typeof result, "object");
-		equal(result.all.length, 12);
+		equal(result.all.length, 13);
 
 		equal(result.warnings.length, 6);
 		var firstWarning = result.warnings[0];
@@ -263,7 +263,7 @@ function(LatexParser, BibLogParser, errorLog, warningLog, badBoxesLog,
 		var thirdWarning = result.warnings[2];
 		equal(thirdWarning.message, "can't use both author and editor fields in Binney87");
 
-		equal(result.errors.length, 6);
+		equal(result.errors.length, 7);
 		var firstError = result.errors[0];
 		equal(firstError.file, 'references.bib');
 		equal(firstError.line, '196');
@@ -273,7 +273,10 @@ function(LatexParser, BibLogParser, errorLog, warningLog, badBoxesLog,
 		var crossReferenceError = result.errors[5];
 		equal(crossReferenceError.level, 'error');
 		equal(crossReferenceError.message.indexOf('A bad cross reference'), 0);
-		equal(crossReferenceError.message.indexOf('A bad cross reference'), 0);
+		var styleError = result.errors[6];
+		equal(styleError.level, 'error');
+		equal(styleError.message.indexOf("I couldn't open style file aa.bst"), 0);
+
 	});
 
 });

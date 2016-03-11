@@ -38,6 +38,7 @@ define ->
 	SINGLELINE_WARNING_REGEX = /^Warning--(.+)$/m
 	MULTILINE_ERROR_REGEX = /^(.*)---line (\d+) of file (.*)\n([^]+?)\nI'm skipping whatever remains of this entry$/m
 	BAD_CROSS_REFERENCE_REGEX = /^(A bad cross reference---entry ".+?"\nrefers to entry.+?, which doesn't exist)$/m
+	MULTILINE_COMMAND_ERROR_REGEX = /^(.*)\n---line (\d+) of file (.*)\n([^]+?)\nI'm skipping whatever remains of this command$/m
 
 	# each parser is a pair of [regex, processFunction], where processFunction
 	# describes how to transform the regex mactch into a log entry object.
@@ -89,6 +90,18 @@ define ->
 					level: "error",
 					message: message,
 					line: null,
+					raw: fullMatch
+				}
+		],
+		[
+			MULTILINE_COMMAND_ERROR_REGEX,
+			(match) ->
+				[fullMatch, firstMessage, lineNumber, fileName, secondMessage] = match
+				{
+					file: fileName,
+					level: "error",
+					message: firstMessage + '\n' + secondMessage,
+					line: lineNumber,
 					raw: fullMatch
 				}
 		]
