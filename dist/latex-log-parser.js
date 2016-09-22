@@ -84,6 +84,8 @@ define(function() {
               content: '',
               raw: this.currentLine + '\n'
             };
+          } else if (this.currentLineIsRunawayArgument()) {
+            this.parseRunawayArgumentError();
           } else if (this.currentLineIsWarning()) {
             this.parseSingleWarningLine(LATEX_WARNING_REGEX);
           } else if (this.currentLineIsHboxWarning()) {
@@ -114,6 +116,9 @@ define(function() {
     this.currentLineIsError = function() {
       return this.currentLine[0] === '!';
     };
+    this.currentLineIsRunawayArgument = function() {
+      return this.currentLine.match(/^Runaway argument/);
+    };
     this.currentLineIsWarning = function() {
       return !!this.currentLine.match(LATEX_WARNING_REGEX);
     };
@@ -122,6 +127,26 @@ define(function() {
     };
     this.currentLineIsHboxWarning = function() {
       return !!this.currentLine.match(HBOX_WARNING_REGEX);
+    };
+    this.parseRunawayArgumentError = function() {
+      var lineNo;
+      this.currentError = {
+        line: null,
+        file: this.currentFilePath,
+        level: 'error',
+        message: this.currentLine,
+        content: '',
+        raw: this.currentLine + '\n'
+      };
+      this.currentError.content += this.log.linesUpToNextWhitespaceLine().join('\n');
+      this.currentError.content += '\n';
+      this.currentError.content += this.log.linesUpToNextWhitespaceLine().join('\n');
+      this.currentError.raw += this.currentError.content;
+      lineNo = this.currentError.raw.match(/l\.([0-9]+)/);
+      if (lineNo) {
+        this.currentError.line = parseInt(lineNo[1], 10);
+      }
+      return this.data.push(this.currentError);
     };
     this.parseSingleWarningLine = function(prefix_regex) {
       var line, lineMatch, warning, warningMatch;

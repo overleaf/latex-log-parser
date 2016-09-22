@@ -89,6 +89,8 @@ define ->
 							message: @currentLine.slice(2)
 							content: ''
 							raw: @currentLine + '\n'
+					else if @currentLineIsRunawayArgument()
+						@parseRunawayArgumentError()
 					else if @currentLineIsWarning()
 						@parseSingleWarningLine LATEX_WARNING_REGEX
 					else if @currentLineIsHboxWarning()
@@ -113,6 +115,9 @@ define ->
 
 		@currentLineIsError = ->
 			@currentLine[0] == '!'
+		
+		@currentLineIsRunawayArgument = ->
+			@currentLine.match(/^Runaway argument/)
 
 		@currentLineIsWarning = ->
 			!!@currentLine.match(LATEX_WARNING_REGEX)
@@ -122,6 +127,23 @@ define ->
 
 		@currentLineIsHboxWarning = ->
 			!!@currentLine.match(HBOX_WARNING_REGEX)
+		
+		@parseRunawayArgumentError = ->
+			@currentError =
+				line: null
+				file: @currentFilePath
+				level: 'error'
+				message: @currentLine
+				content: ''
+				raw: @currentLine + '\n'
+			@currentError.content += @log.linesUpToNextWhitespaceLine().join('\n')
+			@currentError.content += '\n'
+			@currentError.content += @log.linesUpToNextWhitespaceLine().join('\n')
+			@currentError.raw += @currentError.content
+			lineNo = @currentError.raw.match(/l\.([0-9]+)/)
+			if lineNo
+				@currentError.line = parseInt(lineNo[1], 10)
+			@data.push @currentError
 
 		@parseSingleWarningLine = (prefix_regex) ->
 			warningMatch = @currentLine.match(prefix_regex)

@@ -8,11 +8,12 @@ define([
 	"text!logs/natbib-warnings.log",
 	"text!logs/geometry-warnings.log",
 	"text!logs/caption-warnings.log",
+	"text!logs/runaway-arguments.log",
 	"text!logs/biber.blg",
 	"text!logs/bibtex.blg"
 ],
 function(LatexParser, BibLogParser, errorLog, warningLog, badBoxesLog,
-				 biberWarningsLog, natbibWarningsLog, geometryWarningsLog, captionWarningsLog, biberBlg, bibtexBlg) {
+				 biberWarningsLog, natbibWarningsLog, geometryWarningsLog, captionWarningsLog, runawayArgumentsLog, biberBlg, bibtexBlg) {
 
 	function prettyFileList(files, depth) {
 		depth = depth || "	";
@@ -181,7 +182,27 @@ function(LatexParser, BibLogParser, errorLog, warningLog, badBoxesLog,
 			}
 		}
 	});
+	
+	module("Runaway Arguments");
 
+	test("Runaway Arguments parsing", function() {
+		var errors = LatexParser.parse(runawayArgumentsLog).errors;
+		
+		var expectedErrors = [
+			[null, "Runaway argument?", "/compile/runaway_argument.tex"] + "",
+			[null, "Emergency stop.", "/compile/runaway_argument.tex"] + ""
+		];
+		
+		expect(expectedErrors.length);
+		for (var i = 0; i < errors.length; i++) {
+			if (expectedErrors.indexOf([errors[i].line, errors[i].message, errors[i].file] + "") > -1) {
+				ok(true, "Found error: " + errors[i].message);
+			} else {
+				ok(false, "Unexpected error found: " + errors[i].message);
+			}
+		}
+	});
+	
 	module("General");
 
 	test("Ignore Duplicates", function() {
@@ -249,7 +270,6 @@ function(LatexParser, BibLogParser, errorLog, warningLog, badBoxesLog,
 
 	test("typical bibtex .blg file", function() {
 		var result = BibLogParser.parse(bibtexBlg, {});
-		console.log(result);
 		equal(typeof result, "object");
 		equal(result.all.length, 13);
 
