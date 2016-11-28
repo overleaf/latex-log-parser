@@ -76,6 +76,7 @@ function(LatexParser, BibLogParser, errorLog, warningLog, badBoxesLog,
 		var errors = LatexParser.parse(warningLog).warnings;
 
 		var expectedErrors = [
+			[null, "You have requested package `mnsymbol\', but the package provides `MnSymbol\'.", "/compile/mnsymbol.sty"] + "",
 			[7, "Citation `Lambert:2010iw' on page 1 undefined on input line 7.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/introduction.tex"] + "",
 			[7, "Citation `Lambert:2010iw' on page 1 undefined on input line 7.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/introduction.tex"] + "",
 			[72, "Citation `Manton:2004tk' on page 3 undefined on input line 72.", "compiles/d1585ce575dea4cab55f784a22a88652/sections/instantons.tex"] + "",
