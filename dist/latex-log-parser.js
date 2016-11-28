@@ -7,8 +7,8 @@ define(function() {
   PACKAGE_WARNING_REGEX = /^(Package \b.+\b Warning:.*)$/;
   LINES_REGEX = /lines? ([0-9]+)/;
   PACKAGE_REGEX = /^Package (\b.+\b) Warning/;
-	PACKAGE_PROVIDES_REGEX = /^LaTeX Warning: You have requested package `(\b.+\b)'/;
-	PACKAGE_PROVIDES_WARNING_REGEX = /^(LaTeX Warning: You have requested package `\b.+\b',.*)$/;
+  PACKAGE_PROVIDES_REGEX = /^LaTeX Warning: You have requested package `(\b.+\b)'/;
+  PACKAGE_PROVIDES_WARNING_REGEX = /^(LaTeX Warning: You have requested package `\b.+\b',.*)$/;
   LogText = function(text) {
     var i, wrappedLines;
     this.text = text.replace(/(\r\n)|\r/g, '\n');
@@ -88,8 +88,8 @@ define(function() {
             };
           } else if (this.currentLineIsRunawayArgument()) {
             this.parseRunawayArgumentError();
-					} else if (this.currentLineIsPackageProvidesWarning()) {
-						this.parseMultipleWarningLine(LATEX_WARNING_REGEX, PACKAGE_PROVIDES_REGEX, PACKAGE_PROVIDES_WARNING_REGEX);
+          } else if (this.currentLineIsPackageProvidesWarning()) {
+            this.parseMultipleWarningLine(LATEX_WARNING_REGEX, PACKAGE_PROVIDES_REGEX, PACKAGE_PROVIDES_WARNING_REGEX);
           } else if (this.currentLineIsWarning()) {
             this.parseSingleWarningLine(LATEX_WARNING_REGEX);
           } else if (this.currentLineIsHboxWarning()) {
@@ -129,9 +129,9 @@ define(function() {
     this.currentLineIsPackageWarning = function() {
       return !!this.currentLine.match(PACKAGE_WARNING_REGEX);
     };
-		this.currentLineIsPackageProvidesWarning = function() {
-  		return !!this.currentLine.match(PACKAGE_PROVIDES_WARNING_REGEX);
-		};
+    this.currentLineIsPackageProvidesWarning = function() {
+      return !!this.currentLine.match(PACKAGE_PROVIDES_WARNING_REGEX);
+    };
     this.currentLineIsHboxWarning = function() {
       return !!this.currentLine.match(HBOX_WARNING_REGEX);
     };
@@ -191,9 +191,9 @@ define(function() {
         warning_lines.push(warningMatch[1]);
       }
       raw_message = warning_lines.join(' ');
-			if (!!raw_message.match(prefix_regex)) {    // Used to remove the prefix "LaTeX Warning:" from the final message
-			  raw_message = raw_message.match(prefix_regex)[1]
-			}
+      if (!!raw_message.match(prefix_regex)) {    // Used to remove the prefix "LaTeX Warning:" from the final message
+        raw_message = raw_message.match(prefix_regex)[1]
+      }
       this.data.push({
         line: line,
         file: this.currentFilePath,
