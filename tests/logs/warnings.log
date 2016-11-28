@@ -289,6 +289,13 @@ Package: mhsetup 2010/01/21 v1.2a programming setup (MH)
 )
 \c@claim=\count121
 (compiles/d1585ce575dea4cab55f784a22a88652/output.aux)
+(/compile/mnsymbol.sty
+
+LaTeX Warning: You have requested package `mnsymbol',
+               but the package provides `MnSymbol'.
+
+Package: MnSymbol 2007/01/21 v1.4 support for the MnSymbol font
+) (/compile/output.aux)
 \openout1 = `output.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 30.
