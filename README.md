@@ -2,6 +2,9 @@
 
 A set of parsers for Latex logs.
 
+## Moving Home
+
+NB: The latest code for these parsers has moved to https://github.com/overleaf/internal/blob/main/services/web/frontend/js/ide/log-parser . We are in the process of merging this repo into the [monorepo](https://github.com/overleaf/overleaf/issues/923).
 
 ## Usage
 
