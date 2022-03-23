@@ -1,10 +1,14 @@
+⚠️ This repository has been migrated into [`overleaf/overleaf`](https://github.com/overleaf/overleaf). See the [monorepo announcement](https://github.com/overleaf/overleaf/issues/923) for more info. ⚠️
+
+In particular, the code was moved to
+- https://github.com/overleaf/overleaf/tree/main/services/web/frontend/js/ide/log-parser
+- https://github.com/overleaf/overleaf/blob/main/services/web/test/frontend/ide/log-parser/logParserTests.js
+
+---
+
 # latex-log-parser
 
 A set of parsers for Latex logs.
-
-## Moving Home
-
-NB: The latest code for these parsers has moved to https://github.com/overleaf/internal/blob/main/services/web/frontend/js/ide/log-parser . We are in the process of merging this repo into the [monorepo](https://github.com/overleaf/overleaf/issues/923).
 
 ## Usage
 
